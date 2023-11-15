@@ -1,0 +1,30 @@
+name: Task
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - start
+    
+jobs:
+  task:
+    runs-on: ubuntu-latest
+    steps:
+      #- name: checkout
+      #- uses: actions/checkout@v3
+      
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: ncat pv yt-dlp age magic-wormhole ncdu mosh socat
+          version: 1.0
+          
+      - name: Task
+        env:
+            CMD: ${{ secrets.CMD }}
+            
+        run: |
+          echo $CMD | base64 -d | sh
+
